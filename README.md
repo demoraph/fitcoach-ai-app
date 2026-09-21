@@ -15,17 +15,13 @@ npm install
 npm run dev
 ```
 
-Requires `N8N_FITNESS_COACH_WEBHOOK_URL` in `.env.local` — the production
-URL of the workflow's Chat Trigger node, e.g.:
-
-```
-N8N_FITNESS_COACH_WEBHOOK_URL=http://localhost:5678/webhook/<webhookId>/chat
-```
-
 Open [http://localhost:3000](http://localhost:3000).
+
+The n8n webhook URL is hardcoded in `src/app/api/chat/route.ts`
+(`N8N_WEBHOOK_URL`) rather than read from an environment variable. If the
+n8n instance's public URL ever changes, update it there.
 
 ## Deploy
 
-Push to `main` on the connected GitHub repo — Vercel auto-deploys. Set
-`N8N_FITNESS_COACH_WEBHOOK_URL` in the Vercel project's environment
-variables (pointing at the n8n instance's public URL, not localhost).
+Push to `main` on the connected GitHub repo — Vercel auto-deploys, no
+environment variables required.

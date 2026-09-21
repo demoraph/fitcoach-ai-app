@@ -1,18 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const N8N_WEBHOOK_URL =
+  "https://unwritten-rebel-clay.ngrok-free.dev/webhook/9edb86d9-95f6-4b18-a373-834f708046b1/chat";
+
 export async function POST(request: NextRequest) {
-  const webhookUrl = process.env.N8N_FITNESS_COACH_WEBHOOK_URL;
-
-  if (!webhookUrl) {
-    return NextResponse.json(
-      {
-        error: "server_misconfigured",
-        message: "N8N_FITNESS_COACH_WEBHOOK_URL is not set.",
-      },
-      { status: 500 },
-    );
-  }
-
   const body = await request.json().catch(() => null);
   const chatInput = typeof body?.chatInput === "string" ? body.chatInput : null;
   const sessionId = typeof body?.sessionId === "string" ? body.sessionId : null;
@@ -28,7 +19,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const upstream = await fetch(webhookUrl, {
+    const upstream = await fetch(N8N_WEBHOOK_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chatInput, sessionId, action: "sendMessage" }),
