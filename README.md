@@ -17,11 +17,20 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-The n8n webhook URL is hardcoded in `src/app/api/chat/route.ts`
-(`N8N_WEBHOOK_URL`) rather than read from an environment variable. If the
-n8n instance's public URL ever changes, update it there.
+Requires a `.env.local` (not committed) with:
+
+```
+N8N_WEBHOOK_URL=<the n8n workflow's webhook URL>
+N8N_WEBHOOK_USER=<Basic Auth username configured on the webhook>
+N8N_WEBHOOK_PASSWORD=<Basic Auth password configured on the webhook>
+```
+
+The n8n webhook requires Basic Auth (configured on the "Fitness Coach"
+workflow's chat trigger). `route.ts` sends it as an `Authorization` header
+server-side — the browser never sees it.
 
 ## Deploy
 
-Push to `main` on the connected GitHub repo — Vercel auto-deploys, no
-environment variables required.
+Push to `main` on the connected GitHub repo — Vercel auto-deploys. The
+three env vars above must also be set in the Vercel project's Environment
+Variables settings (a redeploy is needed after adding/changing them).

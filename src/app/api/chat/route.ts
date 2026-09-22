@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const N8N_WEBHOOK_URL =
-  "https://unwritten-rebel-clay.ngrok-free.dev/webhook/9edb86d9-95f6-4b18-a373-834f708046b1/chat";
-
 export async function POST(request: NextRequest) {
+  const webhookUrl = process.env.N8N_WEBHOOK_URL;
+  const webhookUser = process.env.N8N_WEBHOOK_USER;
+  const webhookPassword = process.env.N8N_WEBHOOK_PASSWORD;
+
+  if (!webhookUrl || !webhookUser || !webhookPassword) {
+    return NextResponse.json(
+      {
+        error: "server_misconfigured",
+        message: "The coach isn't configured correctly. Please try again later.",
+      },
+      { status: 500 },
+    );
+  }
+
   const body = await request.json().catch(() => null);
   const chatInput = typeof body?.chatInput === "string" ? body.chatInput : null;
   const sessionId = typeof body?.sessionId === "string" ? body.sessionId : null;
@@ -19,9 +30,12 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const upstream = await fetch(N8N_WEBHOOK_URL, {
+    const upstream = await fetch(webhookUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${Buffer.from(`${webhookUser}:${webhookPassword}`).toString("base64")}`,
+      },
       body: JSON.stringify({ chatInput, sessionId, action: "sendMessage" }),
     });
 
